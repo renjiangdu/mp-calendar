@@ -1,0 +1,65 @@
+@color-selected-background: #5578df;
+@color-selected-font: #ffffff;
+@color-disabled-font: #bbbbbb;
+@color-beyond-dates: #bbbbbb;
+@row-height: 50px; // 日历单行的高度
+@date-view-size: 40px; // 日期可选块的大小
+
+.weekdays {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  height: 26px;
+}
+
+.weekday {
+  width: 14.285714%;
+  text-align: center;
+  font-size: 14px;
+  line-height: 26px;
+}
+
+.spans {
+  transition: height .05s;
+}
+
+.span {
+  display: flex;
+  flex-wrap: wrap;
+  position: relative;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(100% / 7);
+  height: @row-height;
+}
+
+.date {
+  width: @date-view-size;
+  height: @date-view-size;
+  text-align: center;
+  line-height: @date-view-size;
+  font-size: 16px;
+
+  &.disabled {
+    color: @color-disabled-font;
+  }
+
+  &.today {
+    color: @color-selected-background;
+  }
+
+  &.selected {
+    background-color: @color-selected-background;
+    border-radius: 50%;
+    color: @color-selected-font;
+  }
+
+  &.former, &.later {
+    color: @color-beyond-dates;
+  }
+}

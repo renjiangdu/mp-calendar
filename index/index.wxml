@@ -1,0 +1,35 @@
+<view style="margin: 16px 10px">
+  <calendar current-month="{{ currentMonth }}"
+            selected-date="{{ selectedDate }}"
+            start-date="{{ startDate }}"
+            end-date="{{ endDate }}"
+            show-former-dates="{{ false }}"
+            show-later-sdates="{{ false }}"
+            bind:swipe="bindSwipe"
+            bind:select="bindSelect">
+  </calendar>
+</view>
+
+<view class="ui-cells">
+  <view class="ui-cell">
+    <view class="ui-cell-hd">当前月份</view>
+    <view class="ui-cell-bd arrow">
+      <picker mode="date" fields="month" value="{{ currentMonth }}" bind:change="bindChangeMonth">
+        <view class="ui-cell-picker">
+          {{ currentMonth }}
+        </view>
+      </picker>
+    </view>
+  </view>
+
+  <view class="ui-cell">
+    <view class="ui-cell-hd">选中日期</view>
+    <view class="ui-cell-bd arrow">
+      <picker mode="date" fields="day" value="{{ selectedDate }}" bind:change="bindChangeDate">
+        <view class="ui-cell-picker">
+          {{ selectedDate }}
+        </view>
+      </picker>
+    </view>
+  </view>
+</view>

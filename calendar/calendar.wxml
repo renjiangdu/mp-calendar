@@ -1,0 +1,40 @@
+<view class="calendar">
+  <view class="weekdays">
+    <view class="weekday" wx:for="{{ weekdays }}" wx:key="*this">{{ item }}</view>
+  </view>
+
+  <swiper class="spans" duration="250" current="{{ spanIndex }}" bind:animationfinish="bindSwipe"
+          style="height: {{ rows * rowHeight }}px">
+    <swiper-item wx:for="{{ spans }}" wx:for-item="span" wx:key="baseDateValue">
+      <view class="span">
+        <!-- 上个月用于填充的天数 -->
+        <view class="item" wx:for="{{ span.weekdayOfFirstDate }}" wx:key="*this">
+          <view class="date former" wx:if="{{ showFormerDates }}">
+            {{ span.daysOfLastMonth - span.weekdayOfFirstDate + index + 1 }}
+          </view>
+        </view>
+
+        <!-- 本月的天数 -->
+        <view class="item" wx:for="{{ span.days }}" wx:key="*this"
+              data-year="{{ span.year }}" data-month="{{ span.month }}" data-date="{{ index + 1 }}"
+              data-value="{{ span.baseDateValue + index }}"
+              bind:tap="bindSelect">
+          <view
+              class="date {{ span.baseDateValue + index > maxDateValue || span.baseDateValue + index < minDateValue ? 'disabled' : '' }} {{ span.year === today.year && span.month === today.month && index + 1 === today.date ? 'today' : '' }} {{ span.year === selected.year && span.month === selected.month && index + 1 === selected.date ? 'selected' : '' }}"
+          >
+            {{ index + 1 }}
+          </view>
+        </view>
+
+        <!-- 下个月用于填充的天数 -->
+        <block wx:if="{{ showLaterDates }}">
+          <view class="item" wx:for="{{ 7 - (span.weekdayOfFirstDate + span.days) % 7  }}" wx:key="*this">
+            <view class="date later">
+              {{ index + 1 }}
+            </view>
+          </view>
+        </block>
+      </view>
+    </swiper-item>
+  </swiper>
+</view>
