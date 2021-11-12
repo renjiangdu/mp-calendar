@@ -3,13 +3,13 @@
     <view class="weekday" wx:for="{{ weekdays }}" wx:key="*this">{{ item }}</view>
   </view>
 
-  <swiper class="spans" duration="250" current="{{ spanIndex }}" bind:animationfinish="bindSwipe"
-          style="height: {{ rows * rowHeight }}px">
-    <swiper-item wx:for="{{ spans }}" wx:for-item="span" wx:key="baseDateValue">
+  <swiper class="spans" duration="250" current="{{ spanIndex }}" style="height: {{ rows * rowHeight }}px"
+          bind:animationfinish="bindSwipe">
+    <swiper-item wx:for="{{ spans }}" wx:for-item="span" wx:key="monthValue">
       <view class="span">
         <!-- 上个月用于填充的天数 -->
         <view class="item" wx:for="{{ span.weekdayOfFirstDate }}" wx:key="*this">
-          <view class="date former" wx:if="{{ showFormerDates }}">
+          <view class="date extra" wx:if="{{ showExtraDates }}">
             {{ span.daysOfLastMonth - span.weekdayOfFirstDate + index + 1 }}
           </view>
         </view>
@@ -17,21 +17,19 @@
         <!-- 本月的天数 -->
         <view class="item" wx:for="{{ span.days }}" wx:key="*this"
               data-year="{{ span.year }}" data-month="{{ span.month }}" data-date="{{ index + 1 }}"
-              data-value="{{ span.baseDateValue + index }}"
+              data-value="{{ span.monthValue + index }}"
               bind:tap="bindSelect">
           <view
-              class="date {{ span.baseDateValue + index > maxDateValue || span.baseDateValue + index < minDateValue ? 'disabled' : '' }} {{ span.year === today.year && span.month === today.month && index + 1 === today.date ? 'today' : '' }} {{ span.year === selected.year && span.month === selected.month && index + 1 === selected.date ? 'selected' : '' }}"
+              class="date {{ marks[span.monthValue + index] ? 'marked' : ''}} {{ span.monthValue + index > maxDateValue || span.monthValue + index < minDateValue ? 'disabled' : '' }} {{ span.year === today.year && span.month === today.month && index + 1 === today.date ? 'today' : '' }} {{ span.year === selected.year && span.month === selected.month && index + 1 === selected.date ? 'selected' : '' }}"
           >
             {{ index + 1 }}
           </view>
         </view>
 
         <!-- 下个月用于填充的天数 -->
-        <block wx:if="{{ showLaterDates }}">
+        <block wx:if="{{ showExtraDates }}">
           <view class="item" wx:for="{{ 7 - (span.weekdayOfFirstDate + span.days) % 7  }}" wx:key="*this">
-            <view class="date later">
-              {{ index + 1 }}
-            </view>
+            <view class="date extra">{{ index + 1 }}</view>
           </view>
         </block>
       </view>

@@ -2,10 +2,11 @@ const app = getApp()
 
 Page({
   data: {
-    startDate: '2021-09-28',
-    endDate: '2021-11-10',
+    startDate: '1970-01-01',
+    endDate: '9999-12-31',
     currentMonth: '2021-10',
-    selectedDate: '2021-10-05'
+    selectedDate: '2021-10-05',
+    markedDates: [ '2021-11-09', '2021-11-10', '2021-11-13', '2021-12-01' ]
   },
 
   bindChangeMonth(e: WechatMiniprogram.PickerChange) {

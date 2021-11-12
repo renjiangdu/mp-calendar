@@ -1,3 +1,9 @@
+/**
+ * @author Ren Jiangdu
+ * @date 2021-11-03
+ * @github https://github.com/renjiangdu/mp-calendar
+ */
+
 import {
   MonthSpan,
   resolveDateInstance,
@@ -7,6 +13,7 @@ import {
   parseDateStringToDateValue
 } from './utils'
 
+/** 默认的最大和最小日期数值 */
 const DEFAULT_MIN_DATE_VALUE = 19700101
 const DEFAULT_MAX_DATE_VALUE = 99991231
 
@@ -26,6 +33,11 @@ Component({
       type: String
     },
 
+    /** 动态设置特殊标记的日期 */
+    markedDates: {
+      type: Array
+    },
+
     /** 设置可选日期范围的左端点，格式为： YYYY-MM-DD */
     startDate: {
       type: String
@@ -36,14 +48,8 @@ Component({
       type: String
     },
 
-    /** 是否显示上个月的最后几天用于填充日历第一行 */
-    showFormerDates: {
-      type: Boolean,
-      value: false
-    },
-
-    /** 是否显示下个月的前几天用于填充日历最后一行 */
-    showLaterDates: {
+    /** 是否显示上个月的最后几天和下个月的前几天用于填充日历的空白位置 */
+    showExtraDates: {
       type: Boolean,
       value: false
     }
@@ -63,6 +69,8 @@ Component({
 
     spanIndex: -1,
     spans: [] as MonthSpan[],
+
+    marks: {} as Record<number, boolean>,
 
     /** 日历单行的高度 */
     rowHeight: 0,
@@ -105,6 +113,20 @@ Component({
     'spanIndex, spans': function (spanIndex: number, spans: MonthSpan[]) {
       this.setData({
         rows: Math.ceil((spans[spanIndex].weekdayOfFirstDate + spans[spanIndex].days) / 7)
+      })
+    },
+
+    'markedDates': function (markedDates: string[]) {
+      if (!markedDates) {
+        return
+      }
+      const map: Record<number, boolean> = {}
+      markedDates.forEach(date => {
+        const value = parseDateStringToDateValue(date)
+        map[value] = true
+      })
+      this.setData({
+        marks: map
       })
     }
   },

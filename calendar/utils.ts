@@ -1,3 +1,9 @@
+/**
+ * @author Ren Jiangdu
+ * @date 2021-11-03
+ * @github https://github.com/renjiangdu/mp-calendar
+ */
+
 /** 一年中每个月的天数 */
 const YEAR_MONTH_DAYS = [ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 ]
 const LEAP_YEAR_MONTH_DAYS = [ 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 ]
@@ -52,7 +58,7 @@ export function resolveDateInstance(date: Date): DateDetail {
 }
 
 /**
- * 解析日期字符串
+ * 解析日期字符串为年、月、日
  *
  * @param {string} dateString YYYY-MM-DD 格式的日期字符串
  * @return {DateDetail}
@@ -76,7 +82,7 @@ interface MonthDetail {
 }
 
 /**
- * 解析月份字符串
+ * 解析月份字符串为年、月
  *
  * @param {string} monthString YYYY-MM 格式的月份字符串
  * @return {MonthDetail}
@@ -95,7 +101,8 @@ export function resolveMonthString(monthString: string): MonthDetail {
 
 /** 月度区间 */
 export interface MonthSpan {
-  baseDateValue: number
+  /** 月份的数值为月份第一天的日期数值 */
+  monthValue: number
   year: number
   month: number
   days: number
@@ -110,7 +117,7 @@ export interface MonthSpan {
  *
  * @param {number} year
  * @param {number} month
- * @param {number} [offset]
+ * @param {number} [offset] 与指定月份的偏移量
  * @return {MonthSpan}
  */
 function getMonthSpan(year: number, month: number, offset?: number): MonthSpan {
@@ -128,7 +135,7 @@ function getMonthSpan(year: number, month: number, offset?: number): MonthSpan {
   const { year: lYear, month: lMonth } = resolveDateInstance(last)
 
   return {
-    baseDateValue: parseInt(`${tYear}${formatNumber(tMonth)}01`),
+    monthValue: parseInt(`${tYear}${formatNumber(tMonth)}01`),
     year: tYear,
     month: tMonth,
     days: countDaysOfMonth(tYear, tMonth),

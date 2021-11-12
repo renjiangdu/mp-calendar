@@ -3,8 +3,8 @@
             selected-date="{{ selectedDate }}"
             start-date="{{ startDate }}"
             end-date="{{ endDate }}"
-            show-former-dates="{{ false }}"
-            show-later-sdates="{{ false }}"
+            show-extra-dates="{{ true }}"
+            marked-dates="{{ markedDates }}"
             bind:swipe="bindSwipe"
             bind:select="bindSelect">
   </calendar>
