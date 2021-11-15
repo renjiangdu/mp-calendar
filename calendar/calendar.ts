@@ -80,10 +80,7 @@ Component({
     /** 日历单行的高度 */
     _rowHeight: 0,
 
-    _currentMonth: '',
-    _selectedDate: '',
-
-    _count: 0
+    _currentMonth: ''
   },
 
   observers: {
@@ -94,7 +91,6 @@ Component({
       if (!monthString) {
         return
       }
-      console.log(monthString, this.data._currentMonth)
       if (monthString === this.data._currentMonth) {
         return
       }
@@ -115,12 +111,6 @@ Component({
       if (!dateString) {
         return
       }
-      if (dateString === this.data._selectedDate) {
-        return
-      }
-
-      // 记录当前值用于比较，避免重复渲染
-      this.data._selectedDate = dateString
 
       this.setData({
         selected: resolveDateString(dateString)
@@ -131,7 +121,6 @@ Component({
      * 监听 spanIndex 和 spans 的变化，调整日历的高度
      */
     'spanIndex, spans': function () {
-      console.log(++this.data._count)
       this.modifySwiperHeight()
     },
 
@@ -198,6 +187,7 @@ Component({
       // 计算行数
       const { spans, spanIndex } = this.data
       const rows = Math.ceil((spans[spanIndex].weekdayOfFirstDate + spans[spanIndex].days) / 7)
+
       this.setData({
         swiperHeight: rows * this.data._rowHeight
       })
