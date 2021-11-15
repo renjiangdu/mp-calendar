@@ -1,4 +1,4 @@
-<view style="margin: 16px 10px">
+<view style="margin: 16px 16px">
   <calendar current-month="{{ currentMonth }}"
             selected-date="{{ selectedDate }}"
             start-date="{{ startDate }}"

@@ -1,10 +1,31 @@
 # 微信小程序原生简易日历组件
 
+使用 TypeScript + LESS 编写的微信小程序日历组件，具有以下优势：
+
+- 采用原生框架，设计简易，易于移植且可拓展性较强；
+- 支持左右滑动无缝切换月份；
+- 支持限制可选的日期范围；
+- 支持自定义特殊标记的日期。
+
 ## 截图演示
 
-![](images/WX20211113-002418@2x.png)
+![](docs/IMG_2670.PNG)
 
 ## 使用说明
+
+### 要求
+
+1. 使用 1.05.2110110 Stable 及以上版本的开发者工具（支持 TypeScript 和 LESS）；
+2. 在 project.config.json 文件中，修改 `setting` 下的 `useCompilerPlugins` 字段为 ["typescript", "less"]。
+
+### 使用
+
+1. 复制 calendar 文件夹到所需的项目目录；
+2. 遵循微信小程序自定义组件的引用规则，按照 index/index.wxml 文件演示的使用方法定制使用。
+
+### 自定义样式
+
+请直接修改 calendar.less 文件。
 
 ### 参数
 

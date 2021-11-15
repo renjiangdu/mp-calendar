@@ -13256,7 +13256,7 @@ wx.getHCEState({
 *
 * ```js
 wx.getImageInfo({
-  src: 'images/a.jpg',
+  src: 'docs/a.jpg',
   success (res) {
     console.log(res.width)
     console.log(res.height)

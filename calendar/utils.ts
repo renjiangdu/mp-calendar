@@ -33,8 +33,15 @@ function countDaysOfMonth(year: number, month: number): number {
 }
 
 function formatNumber(n: number) {
-  const digits = n.toString()
-  return digits[1] ? n : `0${n}`
+  if (n < 10) {
+    return `0${n}`
+  }
+  return n
+}
+
+function formatDateValue(year: number, month: number, date: number = 1) {
+  const value = `${year}${formatNumber(month)}${formatNumber(date)}`
+  return parseInt(value)
 }
 
 interface DateDetail {
@@ -64,10 +71,6 @@ export function resolveDateInstance(date: Date): DateDetail {
  * @return {DateDetail}
  */
 export function resolveDateString(dateString: string): DateDetail {
-  const reg = /^\d{4}-\d{1,2}-\d{1,2}$/
-  if (!reg.test(dateString)) {
-    throw new Error('invalid date string')
-  }
   const [ year, month, date ] = dateString.split('-')
   return {
     year: parseInt(year),
@@ -88,10 +91,6 @@ interface MonthDetail {
  * @return {MonthDetail}
  */
 export function resolveMonthString(monthString: string): MonthDetail {
-  const reg = /^\d{4}-\d{1,2}$/
-  if (!reg.test(monthString)) {
-    throw new Error('invalid month string')
-  }
   const [ year, month ] = monthString.split('-')
   return {
     year: parseInt(year),
@@ -120,10 +119,7 @@ export interface MonthSpan {
  * @param {number} [offset] 与指定月份的偏移量
  * @return {MonthSpan}
  */
-function getMonthSpan(year: number, month: number, offset?: number): MonthSpan {
-  if (offset === undefined) {
-    offset = 0
-  }
+function getMonthSpan(year: number, month: number, offset: number = 0): MonthSpan {
   month = month - 1 + offset
 
   // 获取目标月份的年、月
@@ -135,7 +131,7 @@ function getMonthSpan(year: number, month: number, offset?: number): MonthSpan {
   const { year: lYear, month: lMonth } = resolveDateInstance(last)
 
   return {
-    monthValue: parseInt(`${tYear}${formatNumber(tMonth)}01`),
+    monthValue: formatDateValue(tYear, tMonth),
     year: tYear,
     month: tMonth,
     days: countDaysOfMonth(tYear, tMonth),
@@ -160,6 +156,5 @@ export function getMonthSpans(year: number, month: number, left: number, right: 
  */
 export function parseDateStringToDateValue(dateString: string): number {
   const { year, month, date } = resolveDateString(dateString)
-  const valueString = `${year}${formatNumber(month)}${formatNumber(date)}`
-  return parseInt(valueString)
+  return formatDateValue(year, month, date)
 }

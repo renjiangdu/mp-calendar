@@ -19,9 +19,13 @@ const DEFAULT_MAX_DATE_VALUE = 99991231
 
 /** 默认渲染的 spans 数目，必须是一个奇数 */
 const DEFAULT_SPAN_COUNT = 5
-const DEFAULT_SPAN_PIVOT = Math.floor(DEFAULT_SPAN_COUNT)
+const DEFAULT_SPAN_PIVOT = Math.floor(DEFAULT_SPAN_COUNT / 2)
 
 Component({
+  options: {
+    pureDataPattern: /^_/
+  },
+
   properties: {
     /** 动态设置当前月份，格式为：YYYY-MM */
     currentMonth: {
@@ -72,21 +76,30 @@ Component({
 
     marks: {} as Record<number, boolean>,
 
+    swiperHeight: 0,
     /** 日历单行的高度 */
-    rowHeight: 0,
-    /** 日历的行数 */
-    rows: 0
+    _rowHeight: 0,
+
+    _currentMonth: '',
+    _selectedDate: '',
+
+    _count: 0
   },
 
   observers: {
     /**
      * 监听 current-month 属性的变化，调整当前显示的月份
      */
-    'currentMonth': function (monthStr: string) {
-      if (!monthStr) {
+    'currentMonth': function (monthString: string) {
+      if (!monthString) {
         return
       }
-      const { year, month } = resolveMonthString(monthStr)
+      console.log(monthString, this.data._currentMonth)
+      if (monthString === this.data._currentMonth) {
+        return
+      }
+
+      const { year, month } = resolveMonthString(monthString)
       const spans = getMonthSpans(year, month, -DEFAULT_SPAN_PIVOT, DEFAULT_SPAN_PIVOT)
       this.setData({
         spanIndex: DEFAULT_SPAN_PIVOT,
@@ -98,35 +111,44 @@ Component({
     /**
      * 监听 selected-date 属性的变化，调整当前显示的月份
      */
-    'selectedDate': function (dateStr: string) {
-      if (!dateStr) {
+    'selectedDate': function (dateString: string) {
+      if (!dateString) {
         return
       }
+      if (dateString === this.data._selectedDate) {
+        return
+      }
+
+      // 记录当前值用于比较，避免重复渲染
+      this.data._selectedDate = dateString
+
       this.setData({
-        selected: resolveDateString(dateStr)
+        selected: resolveDateString(dateString)
       })
     },
 
     /**
-     * 监听 spans 和 spanIndex 的变化，调整日历的高度
+     * 监听 spanIndex 和 spans 的变化，调整日历的高度
      */
-    'spanIndex, spans': function (spanIndex: number, spans: MonthSpan[]) {
-      this.setData({
-        rows: Math.ceil((spans[spanIndex].weekdayOfFirstDate + spans[spanIndex].days) / 7)
-      })
+    'spanIndex, spans': function () {
+      console.log(++this.data._count)
+      this.modifySwiperHeight()
     },
 
+    /**
+     * 监听 marked-dates 的变化，调整特殊标记的日期
+     */
     'markedDates': function (markedDates: string[]) {
       if (!markedDates) {
         return
       }
-      const map: Record<number, boolean> = {}
+      const marks: Record<number, boolean> = {}
       markedDates.forEach(date => {
         const value = parseDateStringToDateValue(date)
-        map[value] = true
+        marks[value] = true
       })
       this.setData({
-        marks: map
+        marks
       })
     }
   },
@@ -141,7 +163,8 @@ Component({
           currentMonth: `${today.year}-${today.month}`
         })
       }
-      // 如果为设置 selected-date，则默认为今天
+
+      // 如果未设置 selected-date，则默认为今天
       if (!this.data.selectedDate) {
         this.setData({
           selectedDate: `${today.year}-${today.month}-${today.date}`
@@ -154,24 +177,32 @@ Component({
 
       this.setData({
         today,
-        maxDateValue,
-        minDateValue
+        minDateValue,
+        maxDateValue
       })
     },
 
+    /** 视图层布局完成后执行，获取日历单行的高度 */
     ready() {
-      // 获取单行的高度，用于动态调整 swiper 的高度
       const query = wx.createSelectorQuery().in(this)
       query.select('.item').boundingClientRect(rect => {
-        this.setData({
-          rowHeight: rect.height
-        })
+        this.data._rowHeight = rect.height
+        this.modifySwiperHeight()
       })
       query.exec()
     }
   },
 
   methods: {
+    modifySwiperHeight() {
+      // 计算行数
+      const { spans, spanIndex } = this.data
+      const rows = Math.ceil((spans[spanIndex].weekdayOfFirstDate + spans[spanIndex].days) / 7)
+      this.setData({
+        swiperHeight: rows * this.data._rowHeight
+      })
+    },
+
     /**
      * 当滑动切换月度区间时：
      * 1. 判断是否触及边界，若触及边界则更新日历范围
@@ -181,6 +212,9 @@ Component({
     bindSwipe(e: WechatMiniprogram.SwiperAnimationFinish) {
       const spanIndex = e.detail.current
       const { year, month } = this.data.spans[spanIndex]
+
+      // 记录当前值用于比较，避免重复渲染
+      this.data._currentMonth = `${year}-${month}`
 
       // 当滑动到右边界时
       if (spanIndex === this.data.spans.length - 1) {

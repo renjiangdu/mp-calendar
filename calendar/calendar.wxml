@@ -3,7 +3,7 @@
     <view class="weekday" wx:for="{{ weekdays }}" wx:key="*this">{{ item }}</view>
   </view>
 
-  <swiper class="spans" duration="250" current="{{ spanIndex }}" style="height: {{ rows * rowHeight }}px"
+  <swiper class="spans" duration="250" current="{{ spanIndex }}" style="height: {{ swiperHeight }}px"
           bind:animationfinish="bindSwipe">
     <swiper-item wx:for="{{ spans }}" wx:for-item="span" wx:key="monthValue">
       <view class="span">
